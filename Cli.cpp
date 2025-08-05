@@ -1,5 +1,5 @@
 #include "Cli.hpp"
-#include "Utils.hpp"
+#include "Lexer.hpp"
 #include "Lexer.hpp"
 #include "Command.hpp"
 #include "Exception.hpp"
@@ -11,7 +11,7 @@ void Cli::run() {
     string instr;
     while (true) {
         cout << "$ ";
-        Utils::readInstruction(cin, instr);
+        Lexer::readInstruction(cin, instr);
 
         try {
             shared_ptr<Command> command = Command::fromString(instr);

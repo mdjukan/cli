@@ -24,41 +24,17 @@ class LexicalError : public Exception {
      : Exception(message), instruction(instruction), errorBegin(errorBegin), errorEnd(errorEnd)
      {}
 
-    //stringstream
-    string getMessage() override {
-        stringstream ss;
-        ss << "Error - " << message << ":" << endl;
-        ss << instruction << endl;
-        for (auto it = instruction.begin(); it < instruction.end(); it++) {
-            if (errorBegin <= it && it < errorEnd) {
-                ss << "^";
-            } else {
-                ss << " ";
-        }
-    }
-
-    return ss.str();
-}
+    string getMessage() override ;
 };
 
 class SyntaxError : public Exception {
     public:
     SyntaxError(const string &message) : Exception(message) {}
-
-    string getMessage() override {
-        stringstream ss;
-        ss << "Error - " << message << ".";
-        return ss.str();
-    }
+    string getMessage() override ;
 };
 
 class RuntimeError : public Exception {
     public:
     RuntimeError(const string &message) : Exception(message) {}
-
-    string getMessage() override {
-        stringstream ss;
-        ss << "Error - " << message << ".";
-        return ss.str();
-    }
+    string getMessage() override;
 };

@@ -32,11 +32,7 @@ size_t WordCount::countChars() {
     size_t result = 0;
     string line;
     while (getline(*in(), line)) {
-        for (char c : line) {
-            if (!isspace(c)) {
-                result += 1;
-            }
-        }
+        result += line.size();
     }
 
     in()->clear();

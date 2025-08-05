@@ -26,4 +26,7 @@ namespace Lexer {
     bool validChar(TokenKind kind, char c);
 
     vector<Token> tokenize(string &instr);
+
+    const size_t instructionLengthLimit = 512;
+    void readInstruction(istream &in, string &instr);
 };

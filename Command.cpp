@@ -27,9 +27,9 @@ shared_ptr<Command> Command::fromString(string &instr) {
         return make_shared<Touch>(tokens);
     } else if (command == "wc") {
         return make_shared<WordCount>(tokens);
+    } else {
+        throw SyntaxError("Unknown command");
     }
-
-    return nullptr; // temp
 }
 
 ostream *Command::out() {

@@ -93,3 +93,10 @@ vector<Lexer::Token> Lexer::tokenize(string &instr) {
 
     return tokens;
 }
+
+void Lexer::readInstruction(istream &in, string &instr) {
+    getline(in, instr); 
+    if (instr.size() > instructionLengthLimit) {
+        instr.resize(instructionLengthLimit);
+    }
+}
