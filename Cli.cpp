@@ -2,6 +2,7 @@
 #include "Utils.hpp"
 #include "Lexer.hpp"
 #include "Command.hpp"
+#include "Exception.hpp"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -13,12 +14,10 @@ void Cli::run() {
         Utils::readInstruction(cin, instr);
 
         try {
-            Command *command = Command::fromInstruction(instr); // generistati neke izuzetke
+            shared_ptr<Command> command = Command::fromString(instr);
             command->run();
-            delete command;
-        } catch (Lexer::LexicalError &e) {
-            cout << e.what() << endl;
+        } catch (Exception &e) {
+            cout << e.getMessage() << endl;
         }
-
     }
 }

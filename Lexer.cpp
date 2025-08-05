@@ -1,19 +1,7 @@
 #include "Lexer.hpp"
+#include "Exception.hpp"
 #include <cctype>
 #include <iostream>
-
-string Lexer::LexicalError::what() {
-    string errorMessage(string("Error - ") + message + string(":\n"));
-    errorMessage += instruction + string("\n");
-    for (auto it = instruction.begin(); it < instruction.end(); it++) {
-        if (errorBegin <= it && it < errorEnd) {
-            errorMessage += "^";
-        } else {
-            errorMessage += " ";
-        }
-    }
-    return errorMessage;
-}
 
 ostream &Lexer::operator<<(ostream &out, const Lexer::Token &token) {
     switch (token.kind) {

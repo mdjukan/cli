@@ -22,19 +22,6 @@ namespace Lexer {
 
     ostream &operator<<(ostream &out, const Token &token);
 
-    class LexicalError : public exception {
-        private:
-        string message;
-        string &instruction;
-        string::iterator errorBegin, errorEnd;
-        public:
-        LexicalError(string &instruction, string message,
-        string::iterator errorBegin, string::iterator errorEnd)
-         : instruction(instruction), message(message), errorBegin(errorBegin), errorEnd(errorEnd)
-         {}
-        string what();
-    };
-
     bool isSpace(char c);
     bool validChar(TokenKind kind, char c);
 
