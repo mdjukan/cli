@@ -94,9 +94,21 @@ vector<Lexer::Token> Lexer::tokenize(string &instr) {
     return tokens;
 }
 
-void Lexer::readInstruction(istream &in, string &instr) {
+istream& Lexer::readInstruction(istream &in, string &instr) {
     getline(in, instr); 
     if (instr.size() > instructionLengthLimit) {
         instr.resize(instructionLengthLimit);
     }
+
+    return in;
+}
+
+bool Lexer::isPipeline(const vector<Lexer::Token> &tokens) {
+    for (auto &token : tokens) {
+        if (token.kind == TokenKind::Pipe) {
+            return true;
+        }
+    }
+
+    return false;
 }

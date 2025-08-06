@@ -23,19 +23,20 @@ WordCount::WordCount(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
         tokenIt ++;
     } else if (tokenIt != tokens.end() && (*tokenIt).kind == Lexer::TokenKind::StringLiteral) {
         inputStreamFromStrLit((*tokenIt).value);
+        tokenIt ++;
     }
 
-    //TODO redirections
+    handleRedirects(tokenIt);
 }
 
 size_t WordCount::countChars() {
     size_t result = 0;
     string line;
-    while (getline(*in(), line)) {
+    while (getline(in(), line)) {
         result += line.size();
     }
 
-    in()->clear();
+    in().clear();
 
     return result;
 }
@@ -43,7 +44,7 @@ size_t WordCount::countChars() {
 size_t WordCount::countWords() {
     size_t result = 0;
     string line;
-    while (getline(*in(), line)) {
+    while (getline(in(), line)) {
         bool inWord = false;
         for (char c : line) {
             if (inWord) {
@@ -59,7 +60,7 @@ size_t WordCount::countWords() {
         }
     }
 
-    in()->clear();
+    in().clear();
 
     return result;
 }
@@ -74,5 +75,5 @@ void WordCount::run() {
         result = countChars();
     }
 
-    (*out()) << result << endl;
+    out() << result << endl;
 }

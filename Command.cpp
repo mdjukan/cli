@@ -5,15 +5,17 @@
 #include <iostream>
 using namespace std;
 
-shared_ptr<Command> Command::fromString(string &instr) {
-    vector<Lexer::Token> tokens = Lexer::tokenize(instr);
-
+shared_ptr<Command> Command::fromTokens(const vector<Lexer::Token> &tokens) {
     if (tokens.empty()) {
         throw SyntaxError("Empty instruction");
     }
 
     if (tokens.front().kind != Lexer::TokenKind::Name) {
         throw SyntaxError("Invalid instruction");
+    }
+
+    if (Lexer::isPipeline(tokens)) {
+        return make_shared<Pipeline>(tokens);
     }
 
     string command = tokens.front().value;
@@ -27,28 +29,34 @@ shared_ptr<Command> Command::fromString(string &instr) {
         return make_shared<Touch>(tokens);
     } else if (command == "wc") {
         return make_shared<WordCount>(tokens);
+    } else if (command == "batch") {
+        return make_shared<Batch>(tokens);
     } else {
         throw SyntaxError("Unknown command");
     }
 }
 
-ostream *Command::out() {
+ostream &Command::out() {
     if (outputStream == nullptr) {
-        return &cout;
+        return cout;
     } else {
-        return outputStream.get();
+        return *outputStream;
     }
 }
 
-istream *Command::in() {
+istream &Command::in() {
     if (inputStream == nullptr) {
-        return &cin;
+        return cin;
     } else {
-        return inputStream.get();
+        return *inputStream;
     }
 }
 
 void Command::inputStreamFromFile(string fileName) {
+    if (inputStream != nullptr) {
+        throw SyntaxError("Multiple assigns to input stream");
+    }
+
     shared_ptr<ifstream> fileStream = make_shared<ifstream>(fileName);
     if (!fileStream->is_open()) {
         throw RuntimeError("Can't open file " + fileName);
@@ -57,6 +65,78 @@ void Command::inputStreamFromFile(string fileName) {
     inputStream = fileStream;
 }
 
+void Command::outputStreamFromFile(string fileName) {
+    if (outputStream != nullptr) {
+        throw SyntaxError("Multiple assigns to output stream");
+    }
+
+    shared_ptr<ofstream> fileStream = make_shared<ofstream>(fileName);
+    if (!fileStream->is_open()) {
+        throw RuntimeError("Can't open file " + fileName);
+    }
+
+    outputStream = fileStream;
+}
+
+void Command::outputStreamFromFileAppend(string fileName) {
+    if (outputStream != nullptr) {
+        throw SyntaxError("Multiple assigns to output stream");
+    }
+
+    shared_ptr<ofstream> fileStream = make_shared<ofstream>(fileName, ios::app);
+    if (!fileStream->is_open()) {
+        throw RuntimeError("Can't open file " + fileName);
+    }
+
+    outputStream = fileStream;
+}
+
 void Command::inputStreamFromStrLit(string strLit) {
     inputStream = make_shared<stringstream>(strLit.substr(1, strLit.size()-2));
+}
+
+void Command::handleRedirects(vector<Lexer::Token>::iterator &tokenIt) {
+    // > file --- dva tokena prvi je Redirect drugi je Name
+    // < file
+    // >> file
+
+    while (tokenIt != tokens.end()) {
+        if (tokenIt != tokens.end() && (tokenIt + 1) != tokens.end() &&
+            (*tokenIt).kind == Lexer::TokenKind::Redirection && 
+            (*(tokenIt + 1)).kind == Lexer::TokenKind::Name) {
+                string redirection = (*tokenIt).value;
+                string fileName = (*(tokenIt + 1)).value;
+                if (redirection == "<") {
+                    inputStreamFromFile(fileName);
+                } else if (redirection == ">") {
+                    outputStreamFromFile(fileName);
+                } else if (redirection == ">>") {
+                    outputStreamFromFileAppend(fileName);
+                }
+
+                tokenIt += 2;
+        } else {
+                throw SyntaxError("Invalid redirections");
+        }
+    }
+}
+
+void Command::setInputStream(shared_ptr<istream> __inputStream) {
+    if (inputStream != nullptr) {
+        throw SyntaxError("Multiple assigns to input stream");
+    }
+
+    inputStream = __inputStream;
+}
+
+void Command::setOutputStream(shared_ptr<ostream> __outputStream) {
+    if (outputStream != nullptr) {
+        throw SyntaxError("Multiple assigns to input stream");
+    }
+
+    outputStream = __outputStream;
+}
+
+bool Command::writesToStdout() {
+    return outputStream == nullptr;
 }

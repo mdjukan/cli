@@ -5,3 +5,5 @@
 #include "Date.hpp"
 #include "Touch.hpp"
 #include "WordCount.hpp"
+#include "Batch.hpp"
+#include "Pipeline.hpp"

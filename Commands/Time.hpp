@@ -2,7 +2,7 @@
 #include "../Command.hpp"
 #include "../Lexer.hpp"
 #include <iostream>
-#include <chrono>
+#include <ctime>
 #include <iomanip>
 
 //time -- bez argumenta, moguce redirekcija izlaznog toka

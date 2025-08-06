@@ -24,9 +24,9 @@ namespace Lexer {
 
     bool isSpace(char c);
     bool validChar(TokenKind kind, char c);
-
     vector<Token> tokenize(string &instr);
-
+    bool isPipeline(const vector<Token> &tokens);
+    
     const size_t instructionLengthLimit = 512;
-    void readInstruction(istream &in, string &instr);
+    istream& readInstruction(istream &in, string &instr);
 };

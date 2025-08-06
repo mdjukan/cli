@@ -11,10 +11,11 @@ void Cli::run() {
     string instr;
     while (true) {
         cout << "$ ";
-        Lexer::readInstruction(cin, instr);
-
+        
         try {
-            shared_ptr<Command> command = Command::fromString(instr);
+            Lexer::readInstruction(cin, instr);
+            vector<Lexer::Token> tokens = Lexer::tokenize(instr);
+            shared_ptr<Command> command = Command::fromTokens(tokens);
             command->run();
         } catch (Exception &e) {
             cout << e.getMessage() << endl;

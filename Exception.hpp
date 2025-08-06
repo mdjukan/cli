@@ -14,6 +14,7 @@ class Exception {
     Exception(const string &message) : message(message) {}
 };
 
+
 class LexicalError : public Exception {
     private:
     string &instruction;

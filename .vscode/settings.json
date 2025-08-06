@@ -4,6 +4,8 @@
         "system_error": "cpp",
         "chrono": "cpp",
         "iostream": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "iosfwd": "cpp",
+        "ostream": "cpp"
     }
 }

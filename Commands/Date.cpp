@@ -5,7 +5,9 @@ Date::Date(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
 }
 
 void Date::run() {
-    auto now = chrono::system_clock::now();
-    time_t now_c = chrono::system_clock::to_time_t(now);
-    (*out()) << put_time(localtime(&now_c), "%Y-%m-%d") << endl;
+    time_t currentTime = std::time(nullptr);
+    tm localTime;
+    localtime_r(&currentTime, &localTime);
+    //localtime_s(&localTime, &currentTime); //WIN
+    out() << localTime.tm_mday << "." << (localTime.tm_mon + 1) << "." << (localTime.tm_year+1900) << endl;
 }

@@ -5,7 +5,9 @@ Time::Time(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
 }
 
 void Time::run() {
-    auto now = chrono::system_clock::now();
-    time_t now_c = chrono::system_clock::to_time_t(now);
-    (*out()) << put_time(localtime(&now_c), "%H:%M:%S") << endl;
+    time_t currentTime = std::time(nullptr);
+    tm localTime;
+    localtime_r(&currentTime, &localTime);
+    //localtime_s(&localTime, &currentTime); //WIN
+    out() << localTime.tm_hour << ":" << localTime.tm_min << ":" << localTime.tm_sec << endl;
 }

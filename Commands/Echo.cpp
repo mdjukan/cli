@@ -9,13 +9,15 @@ Echo::Echo(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
         inputStreamFromStrLit((*tokenIt).value);
         tokenIt ++;
     }
+
+    handleRedirects(tokenIt);
 }
 
 void Echo::run() {
     string line;
-    while (getline(*in(), line)) {
-        (*out()) << line << endl;
+    while (getline(in(), line)) {
+        out() << line << endl;
     }
 
-    in()->clear();
+    in().clear();
 }

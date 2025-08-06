@@ -1,5 +1,4 @@
 #include "Touch.hpp"
-#include <filesystem>
 #include <fstream>
 
 Touch::Touch(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
@@ -13,8 +12,13 @@ Touch::Touch(const vector<Lexer::Token> &__tokens) : Command(__tokens) {
     //redirections -- TODO
 }
 
+bool Touch::fileExists(const string& fileName) {
+    ifstream file(fileName);
+    return file.good();
+}
+
 void Touch::run()  {
-    if (filesystem::exists(fileName)) {
+    if (fileExists(fileName)) {
         throw RuntimeError("File " + fileName + " already exists");
     }
 
